@@ -38,6 +38,7 @@ const filterWorks = () => {
   const allButton = document.createElement('button');
   allButton.innerHTML = 'Tous';
   allButton.setAttribute('value', 'all');
+  allButton.classList.add("filtersBtn");
   allButton.addEventListener('click', () => {
     gallery.innerHTML = '';
     createGallery(works);
@@ -49,17 +50,21 @@ const filterWorks = () => {
     const button = document.createElement('button');
     button.innerHTML = category.name;
     button.setAttribute('value', category.id);
+    button.classList.add("filtersBtn");
     filterContainer.appendChild(button);
 
     button.addEventListener('click', () => {
       const value = button.getAttribute('value');
       const filteredWorks = works.filter(work => work.categoryId == value);
       gallery.innerHTML = '';
+      button.classList.add("filtersBtnSelec");
       createGallery(filteredWorks);
     });
 
   });
 }
+
+
 
 getCategory()
 getWorks();
