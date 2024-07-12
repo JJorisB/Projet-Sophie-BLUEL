@@ -18,7 +18,41 @@ const getCategory = async () => {
   filterWorks();
 }
 
+const createModal = () => {
+  const modal = document.getElementById('modal');
+  modal.className = "edit-modal";
+  modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 class="modal-title">Galerie photo</h2>
+                <div id="gallery" class="tab-content active"></div>
+                <hr class="separator">
+                <button class="add-photo-btn">Ajouter une photo</button>
+            </div>
+        `;
 
+  const galleryContainer = modal.querySelector("#gallery");
+  works.forEach(item => {
+    const projectElement = document.createElement("div");
+    projectElement.className = "gallery-item";
+    projectElement.dataset.imageId = item.id;
+    projectElement.innerHTML = `
+            <div class="delete-icon">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <img src="${item.imageUrl}" alt="${item.title}">
+        `;
+    galleryContainer.appendChild(projectElement);
+  });
+
+  const closeBtn = document.querySelector(".close-btn");
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = "none";
+  });
+}
+
+const btnModal = document.querySelector('.editBtn');
+btnModal.addEventListener('click', createModal);
 
 const createGallery = (newWork) => {
   newWork.forEach(work => {

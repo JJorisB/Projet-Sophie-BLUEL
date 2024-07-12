@@ -3,6 +3,7 @@ const loginButton = document.getElementById('login-button');
 const login = async () => {
     const emailValue = document.getElementById('email-field').value;
     const passwordValue = document.getElementById('password-field').value;
+    console.log(emailValue, passwordValue);
     const response = await fetch('http://localhost:5678/api/users/login', {
         method: 'POST',
         headers: {

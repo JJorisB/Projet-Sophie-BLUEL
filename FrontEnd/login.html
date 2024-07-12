@@ -27,14 +27,14 @@
     </header>
     <main>
       <h3>Log In</h3>
-      <form action="" method="post" class="login-form">
-        <label for="login-email" class="label-login">E-mail</label>
-        <input type="text" id="login-email" />
+      <form action="" method="post" class="login-form" onsubmit="return false">
+        <label for="email-field" class="label-login">E-mail</label>
+        <input type="text" id="email-field" />
 
-        <label for="login-password" class="label-login">Mot de passe</label>
-        <input type="password" id="login-password" />
+        <label for="password-field" class="label-login">Mot de passe</label>
+        <input type="password" id="password-field" />
 
-        <input type="submit" value="Se connecter" />
+        <input id="login-button" type="submit" value="Se connecter" />
         <a href="#">Mot de passe oublié</a>
       </form>
     </main>
