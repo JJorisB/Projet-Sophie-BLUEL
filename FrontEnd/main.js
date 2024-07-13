@@ -49,6 +49,26 @@ const createModal = () => {
   closeBtn.addEventListener('click', () => {
     modal.style.display = "none";
   });
+
+  const createSecondModal = () => {
+    const secondModal = document.getElementById('second-modal');
+    secondModal.className = "add-modal";
+    secondModal.innerHTML = `
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <span class="fa fa-arrow-left"></span>
+                <h2 class="modal-title">Ajout photo</h2>
+                <div class="add-pic-container">
+                    <img src="./assets/images/Vector-img.png" class="img-logo">
+                    <input type="file" class="add-pic-btn">
+                </div>
+                <hr class="separator">
+                <button class=""></button>
+            </div>
+        `};
+
+  const secondModalBtn = document.querySelector('.add-photo-btn');
+  secondModalBtn.addEventListener('click', createSecondModal);
 }
 
 const btnModal = document.querySelector('.editBtn');
