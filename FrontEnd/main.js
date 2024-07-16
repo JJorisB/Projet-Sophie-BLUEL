@@ -48,9 +48,10 @@ const createModal = () => {
   const closeBtn = document.querySelector(".close-btn");
   closeBtn.addEventListener('click', () => {
     modal.style.display = "none";
+    secondModal.style.display = "none";
   });
-  window.addEventListener('click', () => {
-    if (event.target == modal) {
+  window.addEventListener('click', (e ) => {
+    if (e.target == modal) {
       modal.style.display = "none";
     }
   })
@@ -85,7 +86,24 @@ const createModal = () => {
                 <button class="submit-pic">Valider</button>
                 </form>
             </div>
-        `};
+        `
+    const closeBtn = secondModal.querySelector(".close-btn");
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = "none";
+      secondModal.style.display = "none";
+    });
+    window.addEventListener('click', (e ) => {
+      if (e.target == secondModal) {
+        secondModal.style.display = "none";
+        modal.style.display = "none";
+      }
+    })
+    const secondModalBtn = document.querySelector('.add-photo-btn');
+    secondModalBtn.addEventListener('click', createSecondModal);
+    secondModalBtn.addEventListener('click', () => {
+      secondModal.style.display = "flex";
+    })
+  };
 
 
 
@@ -99,6 +117,7 @@ btnModal.addEventListener('click', createModal);
 btnModal.addEventListener('click', () => {
   modal.style.display = "flex";
 })
+
 
 const createGallery = (newWork) => {
   newWork.forEach(work => {
@@ -121,6 +140,13 @@ const filterWorks = () => {
   allButton.classList.add("filtersBtn");
   allButton.addEventListener('click', () => {
     gallery.innerHTML = '';
+    allButton.classList.add("filtersBtnSelec");
+    const filterButtons = document.querySelectorAll('.filtersBtn');
+    filterButtons.forEach(filterButton => {
+      if (filterButton !== allButton) {
+        filterButton.classList.remove("filtersBtnSelec");
+      }
+    });
     createGallery(works);
   });
 
@@ -138,6 +164,12 @@ const filterWorks = () => {
       const filteredWorks = works.filter(work => work.categoryId == value);
       gallery.innerHTML = '';
       button.classList.add("filtersBtnSelec");
+      const filterButtons = document.querySelectorAll('.filtersBtn');
+        filterButtons.forEach(item => {
+            if (item !== button) {
+            item.classList.remove("filtersBtnSelec");
+            }
+        });
       createGallery(filteredWorks);
     });
 
