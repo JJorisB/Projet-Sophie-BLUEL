@@ -49,6 +49,13 @@ const createModal = () => {
   closeBtn.addEventListener('click', () => {
     modal.style.display = "none";
   });
+  window.addEventListener('click', () => {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  })
+
+
 
   const createSecondModal = () => {
     const secondModal = document.getElementById('second-modal');
@@ -56,23 +63,42 @@ const createModal = () => {
     secondModal.innerHTML = `
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
-                <span class="fa fa-arrow-left"></span>
+                <span class="fa fa-arrow-left back-btn"></span>
                 <h2 class="modal-title">Ajout photo</h2>
+                <form action="" method="get" class="add-picture-form">
                 <div class="add-pic-container">
                     <img src="./assets/images/Vector-img.png" class="img-logo">
-                    <input type="file" class="add-pic-btn">
+                    <input type="file" class="input-file-btn" id="input-file-btn">
+                    <label for="input-file-btn">+ Ajouter photo</label>
+                    <p>jpg, png : 4mo max</p>
                 </div>
+                <label for="picture-title" class="label-form">Titre</label>
+                <input type="text" id="picture-title" class="title-and-categorie">
+                <label for="category-select" class="label-form">Catégorie</label>
+                <select name ="category" id="category-select" class="title-and-categorie">
+                <option value=""></option>
+                <option value="Objets">Objets</option>
+                <option value="Appartements">Appartements</option>
+                <option value="Hotels & restaurants">Hotels & restaurants</option>
+                </select>
                 <hr class="separator">
-                <button class=""></button>
+                <button class="submit-pic">Valider</button>
+                </form>
             </div>
         `};
+
+
 
   const secondModalBtn = document.querySelector('.add-photo-btn');
   secondModalBtn.addEventListener('click', createSecondModal);
 }
 
+
 const btnModal = document.querySelector('.editBtn');
 btnModal.addEventListener('click', createModal);
+btnModal.addEventListener('click', () => {
+  modal.style.display = "flex";
+})
 
 const createGallery = (newWork) => {
   newWork.forEach(work => {

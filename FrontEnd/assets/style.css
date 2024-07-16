@@ -247,6 +247,14 @@ li:hover {
 #contact textarea {
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  background-color: white;
+}
+
+#name {
+  background-color: white;
+}
+#email {
+  background-color: white;
 }
 
 input[type="submit"] {
@@ -263,12 +271,17 @@ input[type="submit"] {
 footer nav ul {
   display: flex;
   justify-content: flex-end;
-  margin: 2em;
+  padding: 2em;
+  background-color: white;
+}
+footer nav li {
+  background-color: white;
 }
 
 footer {
   height: 60px;
   background-color: white;
+  width: 100%;
 }
 
 /* LogIn Page */
@@ -361,6 +374,7 @@ h3 {
   line-height: 30.5px;
   text-align: center;
   color: black;
+  background: transparent;
 
 }
 
@@ -386,6 +400,8 @@ h3 {
   top: 15px;
   right: 25px;
   font-size: 2.5rem;
+  background-color: white;
+  cursor: pointer;
 }
 .fa-arrow-left {
   position: absolute;
@@ -439,6 +455,7 @@ h3 {
   padding: 10px 0;
   height: 102px;
   object-fit: cover;
+  background-color: white;
 }
 
 .delete-icon {
@@ -482,6 +499,7 @@ h3 {
   border-top: 1px solid #ccc;
   margin-top: 50px;
   margin-bottom: 20px;
+  width: 430px;
 }
 
 .filtersBtn {
@@ -524,7 +542,7 @@ h3 {
 }
 
 .add-pic-container {
-  width: 420px;
+  width: 430px;
   height: 169px;
   gap: 0px;
   border-radius: 3px 0px 0px 0px;
@@ -532,12 +550,101 @@ h3 {
   background: #E8F1F6;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
+.add-pic-container p {
+  background-color: transparent;
+  font-family: Work Sans;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 11.73px;
+  text-align: center;
+}
+
+input[type=file] {
+  display: none;
+}
+input[type=file]::file-selector-button {
+  display: none;
+}
+
+.add-pic-container label {
+  color: #306685;
+  background: #CBD6DC;
+  width: 173px;
+  height: 36px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
 
 .img-logo {
   width: 76px;
   height: 76px;
-  margin-top: 15px;
-  margin-bottom: 5px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  background: transparent;
 }
 
+.tab-content {
+  background: transparent;
+}
+
+.fa-trash-can {
+  background: transparent;
+}
+
+.input-file-btn {
+  background-color: transparent;
+}
+
+.add-picture-form {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  padding-top: 10px;
+}
+
+.title-and-categorie {
+  box-shadow: 0px 4px 14px 0px #00000017;
+  border: none;
+  height: 49px;
+  background-color: white;
+}
+.label-form {
+  background-color: transparent;
+  margin: 30px 0 10px 0;
+}
+.submit-pic {
+  width: 237px;
+  height: 36px;
+  background-color: #1D6154;
+  color: white;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  font-family: "Syne";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  text-align: center;
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+select {
+  padding: 0px 15px 0px 15px;
+}
+
+#picture-title {
+  padding: 0px 15px 0px 15px;
+}
