@@ -391,6 +391,10 @@ h3 {
   display: flex;
 }
 
+.edit-modal2 {
+  display: none;
+}
+
 .modal-title {
   margin-top: 60px;
 }

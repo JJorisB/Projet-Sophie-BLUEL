@@ -1,6 +1,8 @@
 const gallery = document.querySelector('.gallery');
 let works = [];
 let categories = [];
+const modal = document.getElementById('modal');
+const secondModal = document.getElementById('second-modal');
 
 const getWorks = async () => {
   const response = await fetch('http://localhost:5678/api/works');
@@ -8,6 +10,7 @@ const getWorks = async () => {
 
   works = await response.json();
   createGallery(works);
+  createGallery2(works);
 }
 
 const getCategory = async () => {
@@ -18,9 +21,10 @@ const getCategory = async () => {
   filterWorks();
 }
 
-const createModal = () => {
-  const modal = document.getElementById('modal');
-  modal.className = "edit-modal";
+
+const createGallery2 = (newWork) => {
+  modal.classList.add('edit-modal2');
+  modal.innerHTML = "";
   modal.innerHTML = `
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
@@ -30,9 +34,9 @@ const createModal = () => {
                 <button class="add-photo-btn">Ajouter une photo</button>
             </div>
         `;
-
-  const galleryContainer = modal.querySelector("#gallery");
-  works.forEach(item => {
+  const galleryContainer = document.querySelector("#gallery");
+  galleryContainer.innerHTML = "";
+  newWork.forEach(item => {
     const projectElement = document.createElement("div");
     projectElement.className = "gallery-item";
     projectElement.dataset.imageId = item.id;
@@ -44,6 +48,40 @@ const createModal = () => {
         `;
     galleryContainer.appendChild(projectElement);
   });
+
+
+  const deleteWork = async (workId) => {
+    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+      method: 'DELETE',
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Une erreur est survenue');
+    }
+    const index = newWork.findIndex(work => work.id == workId);
+    if (index !== -1) {
+      newWork.splice(index, 1);
+      createGallery(newWork);
+      createGallery2(newWork);
+    }
+  }
+
+  const deleteIcons = document.querySelectorAll('.delete-icon');
+  deleteIcons.forEach(deleteIcon => {
+    deleteIcon.addEventListener('click', async () => {
+      const workId = deleteIcon.parentElement.dataset.imageId;
+      await deleteWork(workId);
+    });
+  });
+};
+
+const createModal = () => {
+  modal.classList.remove('edit-modal2');
+  modal.classList.add('edit-modal');
+  modal.style.display = "flex";
 
   const closeBtn = document.querySelector(".close-btn");
   closeBtn.addEventListener('click', () => {
@@ -57,10 +95,11 @@ const createModal = () => {
   })
 
 
+  const createSecondModal = (event) => {
+    event.preventDefault();
 
-  const createSecondModal = () => {
-    const secondModal = document.getElementById('second-modal');
     secondModal.className = "add-modal";
+    secondModal.style.display = "flex";
     secondModal.innerHTML = `
             <div class="modal-content">
                 <span class="close-btn">&times;</span>
@@ -86,7 +125,21 @@ const createModal = () => {
                 <button class="submit-pic">Valider</button>
                 </form>
             </div>
-        `
+        `;
+
+    const photoFile = document.getElementById('input-file-btn').files[0];
+    const photoTitle = document.getElementById('picture-title').value;
+    const photoCategory = document.getElementById('category-select').value;
+
+    photoFile.addEventListener('change', (e) => {
+      console.log(photoFile);
+    });
+
+    photoFile.addEventListener('change', (e) => {
+      console.log(photoTitle);
+    })
+
+
     const closeBtn = secondModal.querySelector(".close-btn");
     closeBtn.addEventListener('click', () => {
       modal.style.display = "none";
@@ -98,14 +151,7 @@ const createModal = () => {
         modal.style.display = "none";
       }
     })
-    const secondModalBtn = document.querySelector('.add-photo-btn');
-    secondModalBtn.addEventListener('click', createSecondModal);
-    secondModalBtn.addEventListener('click', () => {
-      secondModal.style.display = "flex";
-    })
   };
-
-
 
   const secondModalBtn = document.querySelector('.add-photo-btn');
   secondModalBtn.addEventListener('click', createSecondModal);
@@ -114,14 +160,13 @@ const createModal = () => {
 
 const btnModal = document.querySelector('.editBtn');
 btnModal.addEventListener('click', createModal);
-btnModal.addEventListener('click', () => {
-  modal.style.display = "flex";
-})
 
 
 const createGallery = (newWork) => {
+  gallery.innerHTML = '';
   newWork.forEach(work => {
     const workElement = document.createElement('div');
+    workElement.innerHTML = ""
     workElement.innerHTML = `
             <img src="${work.imageUrl}" alt="${work.title}">
             <div class="work-info">
