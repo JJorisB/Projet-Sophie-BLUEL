@@ -3,11 +3,11 @@ let works = [];
 let categories = [];
 const modal = document.getElementById('modal');
 const secondModal = document.getElementById('second-modal');
+const filterContainer = document.querySelector('#filters');
+const navbarContainer = document.querySelector('#navbarContainer');
 
 const getWorks = async () => {
   const response = await fetch('http://localhost:5678/api/works');
-  console.log(response)
-
   works = await response.json();
   createGallery(works);
   createGallery2(works);
@@ -15,25 +15,21 @@ const getWorks = async () => {
 
 const getCategory = async () => {
   const response = await fetch('http://localhost:5678/api/categories');
-
   categories = await response.json();
-  console.log(categories);
   filterWorks();
 }
 
-
 const createGallery2 = (newWork) => {
   modal.classList.add('edit-modal2');
-  modal.innerHTML = "";
   modal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 class="modal-title">Galerie photo</h2>
-                <div id="gallery" class="tab-content active"></div>
-                <hr class="separator">
-                <button class="add-photo-btn">Ajouter une photo</button>
-            </div>
-        `;
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2 class="modal-title">Galerie photo</h2>
+      <div id="gallery" class="tab-content active"></div>
+      <hr class="separator">
+      <button class="add-photo-btn">Ajouter une photo</button>
+    </div>
+  `;
   const galleryContainer = document.querySelector("#gallery");
   galleryContainer.innerHTML = "";
   newWork.forEach(item => {
@@ -41,14 +37,13 @@ const createGallery2 = (newWork) => {
     projectElement.className = "gallery-item";
     projectElement.dataset.imageId = item.id;
     projectElement.innerHTML = `
-            <div class="delete-icon">
-                <i class="fa-solid fa-trash-can"></i>
-            </div>
-            <img src="${item.imageUrl}" alt="${item.title}">
-        `;
+      <div class="delete-icon">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+      <img src="${item.imageUrl}" alt="${item.title}">
+    `;
     galleryContainer.appendChild(projectElement);
   });
-
 
   const deleteWork = async (workId) => {
     const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
@@ -76,6 +71,8 @@ const createGallery2 = (newWork) => {
       await deleteWork(workId);
     });
   });
+
+  attachModalEvents(); // Ré-attacher les événements après la mise à jour du contenu
 };
 
 const createModal = () => {
@@ -83,102 +80,166 @@ const createModal = () => {
   modal.classList.add('edit-modal');
   modal.style.display = "flex";
 
-  const closeBtn = document.querySelector(".close-btn");
+  attachModalEvents(); // Ré-attacher les événements après la mise à jour du contenu
+}
+
+const createSecondModal = (event) => {
+  event.preventDefault();
+
+  secondModal.className = "add-modal";
+  secondModal.style.display = "flex";
+  secondModal.innerHTML = `
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <span class="fa fa-arrow-left back-btn"></span>
+      <h2 class="modal-title">Ajout photo</h2>
+      <form id="add-picture-form" class="add-picture-form">
+        <div class="add-pic-container">
+        <i class="fa-regular fa-image img-logo"></i>
+          <img src="#" class="" id="preview-img" alt="">
+          <input type="file" class="input-file-btn" id="input-file-btn">
+          <label for="input-file-btn">+ Ajouter photo</label>
+          <p>jpg, png : 4mo max</p>
+        </div>
+        <label for="picture-title" class="label-form">Titre</label>
+        <input type="text" id="picture-title" class="title-and-categorie">
+        <label for="category-select" class="label-form">Catégorie</label>
+        <select name="category" id="category-select" class="title-and-categorie">
+          <option value=""></option>
+          <option value="1">Objets</option>
+          <option value="2">Appartements</option>
+          <option value="3">Hotels & restaurants</option>
+        </select>
+        <hr class="separator">
+        <button type="submit" class="submit-pic">Valider</button>
+        <div class="error-message" style="color: red; display: none;">Tous les champs sont obligatoires.</div>
+      </form>
+    </div>
+  `;
+
+  const closeBtn = secondModal.querySelector(".close-btn");
   closeBtn.addEventListener('click', () => {
     modal.style.display = "none";
     secondModal.style.display = "none";
   });
-  window.addEventListener('click', (e ) => {
-    if (e.target == modal) {
+
+  const backBtn = secondModal.querySelector(".back-btn");
+  backBtn.addEventListener('click', () => {
+    secondModal.style.display = "none";
+    modal.style.display = "flex";
+  });
+  // Ajoute un événement pour retourner à la première modale lorsque la flèche est cliquée.
+
+  window.addEventListener('click', (e) => {
+    if (e.target == secondModal) {
+      secondModal.style.display = "none";
       modal.style.display = "none";
     }
-  })
+  });
 
+  const inputFile = document.getElementById('input-file-btn');
+  inputFile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const previewImg = document.getElementById('preview-img');
+        previewImg.src = e.target.result;
+        previewImg.style.display = 'block';
+        document.querySelector('.add-pic-container i').style.display = 'none';
+        document.querySelector('.add-pic-container label').style.display = 'none';
+        document.querySelector('.add-pic-container p').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-  const createSecondModal = (event) => {
-    event.preventDefault();
-
-    secondModal.className = "add-modal";
-    secondModal.style.display = "flex";
-    secondModal.innerHTML = `
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <span class="fa fa-arrow-left back-btn"></span>
-                <h2 class="modal-title">Ajout photo</h2>
-                <form action="" method="get" class="add-picture-form">
-                <div class="add-pic-container">
-                    <img src="./assets/images/Vector-img.png" class="img-logo">
-                    <input type="file" class="input-file-btn" id="input-file-btn">
-                    <label for="input-file-btn">+ Ajouter photo</label>
-                    <p>jpg, png : 4mo max</p>
-                </div>
-                <label for="picture-title" class="label-form">Titre</label>
-                <input type="text" id="picture-title" class="title-and-categorie">
-                <label for="category-select" class="label-form">Catégorie</label>
-                <select name ="category" id="category-select" class="title-and-categorie">
-                <option value=""></option>
-                <option value="Objets">Objets</option>
-                <option value="Appartements">Appartements</option>
-                <option value="Hotels & restaurants">Hotels & restaurants</option>
-                </select>
-                <hr class="separator">
-                <button class="submit-pic">Valider</button>
-                </form>
-            </div>
-        `;
-
+  const form = secondModal.querySelector('#add-picture-form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const photoFile = document.getElementById('input-file-btn').files[0];
     const photoTitle = document.getElementById('picture-title').value;
     const photoCategory = document.getElementById('category-select').value;
+    const errorMessage = document.querySelector('.error-message');
 
-    photoFile.addEventListener('change', (e) => {
-      console.log(photoFile);
-    });
+    if (!photoFile || !photoTitle || !photoCategory) {
+      errorMessage.style.display = 'block';
+      errorMessage.style.textAlign = 'center';
+      errorMessage.style.marginTop = '10px';
+      return;
+    } else {
+      errorMessage.style.display = 'none';
+    }
 
-    photoFile.addEventListener('change', (e) => {
-      console.log(photoTitle);
-    })
+    await addWork(photoFile, photoTitle, photoCategory);
+  });
+}
 
-
-    const closeBtn = secondModal.querySelector(".close-btn");
+const attachModalEvents = () => {
+  const closeBtn = document.querySelector(".close-btn");
+  if (closeBtn) {
     closeBtn.addEventListener('click', () => {
       modal.style.display = "none";
       secondModal.style.display = "none";
     });
-    window.addEventListener('click', (e ) => {
-      if (e.target == secondModal) {
-        secondModal.style.display = "none";
-        modal.style.display = "none";
-      }
-    })
-  };
+  }
+
+  window.addEventListener('click', (e) => {
+    if (e.target == modal) {
+      modal.style.display = "none";
+    }
+  });
 
   const secondModalBtn = document.querySelector('.add-photo-btn');
-  secondModalBtn.addEventListener('click', createSecondModal);
+  if (secondModalBtn) {
+    secondModalBtn.addEventListener('click', createSecondModal);
+  }
 }
 
+const addWork = async (photoFile, photoTitle, photoCategory) => {
+  const formData = new FormData();
+  formData.append('image', photoFile);
+  formData.append('title', photoTitle);
+  formData.append('category', photoCategory);
+
+  const response = await fetch('http://localhost:5678/api/works', {
+    method: 'POST',
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('Une erreur est survenue lors de l\'ajout du travail');
+  }
+
+  const newWork = await response.json();
+  works.push(newWork);
+  createGallery(works);
+  createGallery2(works);
+  modal.style.display = "none";
+  secondModal.style.display = "none";
+}
 
 const btnModal = document.querySelector('.editBtn');
 btnModal.addEventListener('click', createModal);
-
 
 const createGallery = (newWork) => {
   gallery.innerHTML = '';
   newWork.forEach(work => {
     const workElement = document.createElement('div');
-    workElement.innerHTML = ""
     workElement.innerHTML = `
-            <img src="${work.imageUrl}" alt="${work.title}">
-            <div class="work-info">
-                <figcaption>${work.title}</figcaption>
-            </div>
-        `;
+      <img src="${work.imageUrl}" alt="${work.title}">
+      <div class="work-info">
+        <figcaption>${work.title}</figcaption>
+      </div>
+    `;
     gallery.appendChild(workElement);
   });
 }
 
 const filterWorks = () => {
-  const filterContainer = document.querySelector('#filters');
   const allButton = document.createElement('button');
   allButton.innerHTML = 'Tous';
   allButton.setAttribute('value', 'all');
@@ -210,18 +271,56 @@ const filterWorks = () => {
       gallery.innerHTML = '';
       button.classList.add("filtersBtnSelec");
       const filterButtons = document.querySelectorAll('.filtersBtn');
-        filterButtons.forEach(item => {
-            if (item !== button) {
-            item.classList.remove("filtersBtnSelec");
-            }
-        });
+      filterButtons.forEach(item => {
+        if (item !== button) {
+          item.classList.remove("filtersBtnSelec");
+        }
+      });
       createGallery(filteredWorks);
     });
-
   });
 }
 
+const adminMode = () => {
+  const isLoggedIn = localStorage.getItem("accessToken");
 
+  const link = document.getElementById("authLink");
+  const navbar = document.createElement("div")
+  navbar.classList.add("navbar");
 
-getCategory()
+  const logo = document.createElement("i")
+  logo.classList.add("fas", "fa-pen-to-square");
+
+  const modeEdition = document.createElement("span");
+  modeEdition.textContent = "Mode édition";
+
+  navbar.appendChild(logo);
+  navbar.appendChild(modeEdition);
+  navbarContainer.appendChild(navbar);
+
+  if (isLoggedIn) {
+    navbar.style.display = "flex";
+    filterContainer.style.display = "none";
+    link.textContent = "logout";
+    link.href = "#";
+  } else {
+    navbar.style.display = "none";
+    btnModal.style.display = "none";
+    link.textContent = "login";
+    link.href = "login.html";
+  }
+
+  link.addEventListener("click", (event) => {
+    if (isLoggedIn) {
+      event.preventDefault();
+      localStorage.removeItem("accessToken");
+      link.textContent = "login";
+      link.href = "login.html"
+      location.reload();
+    }
+  });
+}
+
+adminMode();
+getCategory();
 getWorks();

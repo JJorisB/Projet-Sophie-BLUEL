@@ -2,9 +2,6 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-* {
-  background-color: #fffef8;
-}
 
 html,
 body,
@@ -180,6 +177,40 @@ nav li {
 li:hover {
   color: #b1663c;
 }
+
+nav li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#navbarContainer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+}
+
+.navbar {
+  background-color: black;
+  color: white;
+  height: 5vh;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 1000;
+}
+
+.navbar span {
+  font-size: 16px;
+}
+
+.navbar i {
+  width: 40px;
+  margin-right: 0;
+  font-size: 14px;
+  color: white;
+}
+
 #introduction {
   display: flex;
   align-items: center;
@@ -517,6 +548,7 @@ h3 {
   color: #1D6154;
   height: 38px;
   padding: 0 14px;
+  background-color: white;
 }
 
 .filtersBtnSelec {
@@ -525,10 +557,8 @@ h3 {
   font-family: Syne;
   font-size: 16px;
   font-weight: 700;
-  line-height: 19.2px;
   text-align: center;
   color: #ffffff;
-  padding: 9px 14px;
   background: #1D6154;
 }
 
@@ -550,7 +580,6 @@ h3 {
   height: 169px;
   gap: 0px;
   border-radius: 3px 0px 0px 0px;
-  opacity: 0px;
   background: #E8F1F6;
   display: flex;
   justify-content: center;
@@ -586,13 +615,28 @@ input[type=file]::file-selector-button {
   cursor: pointer;
 }
 
+#preview-img {
+  display: none;
+  max-width: 47%;
+  max-height: 100%;
+  position: absolute;
+}
+
+.back-btn {
+  cursor: pointer;
+}
 
 .img-logo {
-  width: 76px;
-  height: 76px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  background: transparent;
+  color: #b9c5cc;
+  font-size: 90px;
+  font-weight: 100;
+  margin: 10px 0 40px 0;
+  background-color: #e8f1f7;
+  width: 70px;
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
 }
 
 .tab-content {
