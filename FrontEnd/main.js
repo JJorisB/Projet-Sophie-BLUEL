@@ -1,26 +1,29 @@
-const gallery = document.querySelector('.gallery');
+const gallery = document.querySelector(".gallery");
 let works = [];
 let categories = [];
-const modal = document.getElementById('modal');
-const secondModal = document.getElementById('second-modal');
-const filterContainer = document.querySelector('#filters');
-const navbarContainer = document.querySelector('#navbarContainer');
+const modal = document.getElementById("modal");
+const secondModal = document.getElementById("second-modal");
+const filterContainer = document.querySelector("#filters");
+const navbarContainer = document.querySelector("#navbarContainer");
 
+// Étape 1.1 : Appel API pour les travaux (galeries)
 const getWorks = async () => {
-  const response = await fetch('http://localhost:5678/api/works');
+  const response = await fetch("http://localhost:5678/api/works");
   works = await response.json();
   createGallery(works);
   createGallery2(works);
-}
+};
 
+// Étape 2.1 : Appel API pour les catégories (filtres)
 const getCategory = async () => {
-  const response = await fetch('http://localhost:5678/api/categories');
+  const response = await fetch("http://localhost:5678/api/categories");
   categories = await response.json();
   filterWorks();
-}
+};
 
+//Étape 4.3 : Création de la première modale
 const createGallery2 = (newWork) => {
-  modal.classList.add('edit-modal2');
+  modal.classList.add("edit-modal2");
   modal.innerHTML = `
     <div class="modal-content">
       <span class="close-btn">&times;</span>
@@ -32,7 +35,7 @@ const createGallery2 = (newWork) => {
   `;
   const galleryContainer = document.querySelector("#gallery");
   galleryContainer.innerHTML = "";
-  newWork.forEach(item => {
+  newWork.forEach((item) => {
     const projectElement = document.createElement("div");
     projectElement.className = "gallery-item";
     projectElement.dataset.imageId = item.id;
@@ -45,44 +48,47 @@ const createGallery2 = (newWork) => {
     galleryContainer.appendChild(projectElement);
   });
 
+  // Étape 4.4 : Suppression d'un projet de la galley & message d'erreur
   const deleteWork = async (workId) => {
     const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
-      }
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     });
 
     if (!response.ok) {
-      throw new Error('Une erreur est survenue');
+      throw new Error("Une erreur est survenue");
     }
-    const index = newWork.findIndex(work => work.id == workId);
+    const index = newWork.findIndex((work) => work.id == workId);
     if (index !== -1) {
       newWork.splice(index, 1);
       createGallery(newWork);
       createGallery2(newWork);
     }
-  }
+  };
 
-  const deleteIcons = document.querySelectorAll('.delete-icon');
-  deleteIcons.forEach(deleteIcon => {
-    deleteIcon.addEventListener('click', async () => {
+  const deleteIcons = document.querySelectorAll(".delete-icon");
+  deleteIcons.forEach((deleteIcon) => {
+    deleteIcon.addEventListener("click", async () => {
       const workId = deleteIcon.parentElement.dataset.imageId;
       await deleteWork(workId);
     });
   });
 
-  attachModalEvents(); // Ré-attacher les événements après la mise à jour du contenu
+  attachModalEvents();
 };
 
+// Étape 4.1 : Affichage première modale
 const createModal = () => {
-  modal.classList.remove('edit-modal2');
-  modal.classList.add('edit-modal');
+  modal.classList.remove("edit-modal2");
+  modal.classList.add("edit-modal");
   modal.style.display = "flex";
 
-  attachModalEvents(); // Ré-attacher les événements après la mise à jour du contenu
-}
+  attachModalEvents();
+};
 
+// Étape 5.2 : Création de la seconde modale
 const createSecondModal = (event) => {
   event.preventDefault();
 
@@ -117,118 +123,125 @@ const createSecondModal = (event) => {
     </div>
   `;
 
+  // Étape 5.3 : Evenements de fermeture de la seconde modale
   const closeBtn = secondModal.querySelector(".close-btn");
-  closeBtn.addEventListener('click', () => {
+  closeBtn.addEventListener("click", () => {
     modal.style.display = "none";
     secondModal.style.display = "none";
   });
 
   const backBtn = secondModal.querySelector(".back-btn");
-  backBtn.addEventListener('click', () => {
+  backBtn.addEventListener("click", () => {
     secondModal.style.display = "none";
     modal.style.display = "flex";
   });
-  // Ajoute un événement pour retourner à la première modale lorsque la flèche est cliquée.
 
-  window.addEventListener('click', (e) => {
+  window.addEventListener("click", (e) => {
     if (e.target == secondModal) {
       secondModal.style.display = "none";
       modal.style.display = "none";
     }
   });
 
-  const inputFile = document.getElementById('input-file-btn');
-  inputFile.addEventListener('change', (e) => {
+  // Étape 5.6 : Prévisualisation de l'image upload & cacher les anciens elements
+  const inputFile = document.getElementById("input-file-btn");
+  inputFile.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const previewImg = document.getElementById('preview-img');
+        const previewImg = document.getElementById("preview-img");
         previewImg.src = e.target.result;
-        previewImg.style.display = 'block';
-        document.querySelector('.add-pic-container i').style.display = 'none';
-        document.querySelector('.add-pic-container label').style.display = 'none';
-        document.querySelector('.add-pic-container p').style.display = 'none';
+        previewImg.style.display = "block";
+        document.querySelector(".add-pic-container i").style.display = "none";
+        document.querySelector(".add-pic-container label").style.display =
+          "none";
+        document.querySelector(".add-pic-container p").style.display = "none";
       };
       reader.readAsDataURL(file);
     }
   });
 
-  const form = secondModal.querySelector('#add-picture-form');
-  form.addEventListener('submit', async (e) => {
+  // Etape 5.4 : Envoi d'un nouveau projet via le formulaire
+  const form = secondModal.querySelector("#add-picture-form");
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const photoFile = document.getElementById('input-file-btn').files[0];
-    const photoTitle = document.getElementById('picture-title').value;
-    const photoCategory = document.getElementById('category-select').value;
-    const errorMessage = document.querySelector('.error-message');
+    const photoFile = document.getElementById("input-file-btn").files[0];
+    const photoTitle = document.getElementById("picture-title").value;
+    const photoCategory = document.getElementById("category-select").value;
+    const errorMessage = document.querySelector(".error-message");
 
     if (!photoFile || !photoTitle || !photoCategory) {
-      errorMessage.style.display = 'block';
-      errorMessage.style.textAlign = 'center';
-      errorMessage.style.marginTop = '10px';
+      errorMessage.style.display = "block";
+      errorMessage.style.textAlign = "center";
+      errorMessage.style.marginTop = "10px";
       return;
     } else {
-      errorMessage.style.display = 'none';
+      errorMessage.style.display = "none";
     }
 
     await addWork(photoFile, photoTitle, photoCategory);
   });
-}
+};
 
+//Étape 4.2 : Fermeture des modales
 const attachModalEvents = () => {
   const closeBtn = document.querySelector(".close-btn");
   if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
+    closeBtn.addEventListener("click", () => {
       modal.style.display = "none";
       secondModal.style.display = "none";
     });
   }
 
-  window.addEventListener('click', (e) => {
+  window.addEventListener("click", (e) => {
     if (e.target == modal) {
       modal.style.display = "none";
     }
   });
-
-  const secondModalBtn = document.querySelector('.add-photo-btn');
+  // Étape 5.1 : Bouton de la seconde modale
+  const secondModalBtn = document.querySelector(".add-photo-btn");
   if (secondModalBtn) {
-    secondModalBtn.addEventListener('click', createSecondModal);
+    secondModalBtn.addEventListener("click", createSecondModal);
   }
-}
+};
 
+// Étape 5.5 : Vérification de l'upload
 const addWork = async (photoFile, photoTitle, photoCategory) => {
   const formData = new FormData();
-  formData.append('image', photoFile);
-  formData.append('title', photoTitle);
-  formData.append('category', photoCategory);
+  formData.append("image", photoFile);
+  formData.append("title", photoTitle);
+  formData.append("category", photoCategory);
 
-  const response = await fetch('http://localhost:5678/api/works', {
-    method: 'POST',
+  const response = await fetch("http://localhost:5678/api/works", {
+    method: "POST",
     headers: {
-      "Authorization": `Bearer ${localStorage.getItem("accessToken")}`
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
-    body: formData
+    body: formData,
   });
 
   if (!response.ok) {
-    throw new Error('Une erreur est survenue lors de l\'ajout du travail');
+    throw new Error("Une erreur est survenue lors de l'ajout du travail");
   }
-
+  // Étape 5.7 : Affichage du projet et fermeture de la modale
   const newWork = await response.json();
   works.push(newWork);
   createGallery(works);
   createGallery2(works);
   modal.style.display = "none";
   secondModal.style.display = "none";
-}
+};
 
-const btnModal = document.querySelector('.editBtn');
-btnModal.addEventListener('click', createModal);
+// Étape 4.1 : Selection du bouton & ajout d'un evenement
+const btnModal = document.querySelector(".editBtn");
+btnModal.addEventListener("click", createModal);
 
+// Étape 1.2 : Afficher les travaux en JavaScript
 const createGallery = (newWork) => {
-  gallery.innerHTML = '';
-  newWork.forEach(work => {
-    const workElement = document.createElement('div');
+  gallery.innerHTML = "";
+  newWork.forEach((work) => {
+    const workElement = document.createElement("div");
     workElement.innerHTML = `
       <img src="${work.imageUrl}" alt="${work.title}">
       <div class="work-info">
@@ -237,18 +250,18 @@ const createGallery = (newWork) => {
     `;
     gallery.appendChild(workElement);
   });
-}
-
+};
+// Étape 2.2 : Affichage bouton "TOUS"
 const filterWorks = () => {
-  const allButton = document.createElement('button');
-  allButton.innerHTML = 'Tous';
-  allButton.setAttribute('value', 'all');
+  const allButton = document.createElement("button");
+  allButton.innerHTML = "Tous";
+  allButton.setAttribute("value", "all");
   allButton.classList.add("filtersBtn");
-  allButton.addEventListener('click', () => {
-    gallery.innerHTML = '';
+  allButton.addEventListener("click", () => {
+    gallery.innerHTML = "";
     allButton.classList.add("filtersBtnSelec");
-    const filterButtons = document.querySelectorAll('.filtersBtn');
-    filterButtons.forEach(filterButton => {
+    const filterButtons = document.querySelectorAll(".filtersBtn");
+    filterButtons.forEach((filterButton) => {
       if (filterButton !== allButton) {
         filterButton.classList.remove("filtersBtnSelec");
       }
@@ -258,20 +271,21 @@ const filterWorks = () => {
 
   filterContainer.appendChild(allButton);
 
-  categories.forEach(category => {
-    const button = document.createElement('button');
+  // Étape 2.3 : Affichage d'un bouton par catégorie
+  categories.forEach((category) => {
+    const button = document.createElement("button");
     button.innerHTML = category.name;
-    button.setAttribute('value', category.id);
+    button.setAttribute("value", category.id);
     button.classList.add("filtersBtn");
     filterContainer.appendChild(button);
 
-    button.addEventListener('click', () => {
-      const value = button.getAttribute('value');
-      const filteredWorks = works.filter(work => work.categoryId == value);
-      gallery.innerHTML = '';
+    button.addEventListener("click", () => {
+      const value = button.getAttribute("value");
+      const filteredWorks = works.filter((work) => work.categoryId == value);
+      gallery.innerHTML = "";
       button.classList.add("filtersBtnSelec");
-      const filterButtons = document.querySelectorAll('.filtersBtn');
-      filterButtons.forEach(item => {
+      const filterButtons = document.querySelectorAll(".filtersBtn");
+      filterButtons.forEach((item) => {
         if (item !== button) {
           item.classList.remove("filtersBtnSelec");
         }
@@ -279,16 +293,16 @@ const filterWorks = () => {
       createGallery(filteredWorks);
     });
   });
-}
-
+};
+// Etape 3 : Admin mode
 const adminMode = () => {
   const isLoggedIn = localStorage.getItem("accessToken");
 
   const link = document.getElementById("authLink");
-  const navbar = document.createElement("div")
+  const navbar = document.createElement("div");
   navbar.classList.add("navbar");
 
-  const logo = document.createElement("i")
+  const logo = document.createElement("i");
   logo.classList.add("fas", "fa-pen-to-square");
 
   const modeEdition = document.createElement("span");
@@ -315,11 +329,11 @@ const adminMode = () => {
       event.preventDefault();
       localStorage.removeItem("accessToken");
       link.textContent = "login";
-      link.href = "login.html"
+      link.href = "login.html";
       location.reload();
     }
   });
-}
+};
 
 adminMode();
 getCategory();
