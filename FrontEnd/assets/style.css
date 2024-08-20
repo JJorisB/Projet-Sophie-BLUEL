@@ -2,7 +2,9 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-
+* {
+  background-color: #fffef8;
+}
 html,
 body,
 div,
@@ -137,7 +139,7 @@ body {
 header {
   display: flex;
   justify-content: space-between;
-  margin: 50px 0;
+  margin: 85px 0;
 }
 section {
   margin: 50px 0;
@@ -328,7 +330,6 @@ h3 {
   margin-bottom: 30px;
 }
 
-
 .login-form {
   display: flex;
   flex-direction: column;
@@ -354,6 +355,7 @@ h3 {
 
 .label-login {
   font-family: Work Sans;
+  width: 379px;
   font-size: 14px;
   font-weight: 500;
   line-height: 16.42px;
@@ -406,7 +408,6 @@ h3 {
   text-align: center;
   color: black;
   background: transparent;
-
 }
 
 .edit-modal {
@@ -444,7 +445,6 @@ h3 {
   left: 25px;
   font-size: 1.5rem;
 }
-
 
 .editBtn {
   cursor: pointer;
@@ -515,7 +515,7 @@ h3 {
 .add-photo-btn {
   width: 100%;
   height: 40px;
-  background-color: #1D6154;
+  background-color: #1d6154;
   color: white;
   border: none;
   border-radius: 60px;
@@ -538,28 +538,28 @@ h3 {
 }
 
 .filtersBtn {
-  border: 2px solid #1D6154;
+  border: 2px solid #1d6154;
   border-radius: 60px;
   font-family: Syne;
   font-size: 16px;
   font-weight: 700;
   line-height: 19.2px;
   text-align: center;
-  color: #1D6154;
+  color: #1d6154;
   height: 38px;
   padding: 0 14px;
   background-color: white;
 }
 
 .filtersBtnSelec {
-  border: 2px solid #1D6154;
+  border: 2px solid #1d6154;
   border-radius: 60px;
   font-family: Syne;
   font-size: 16px;
   font-weight: 700;
   text-align: center;
   color: #ffffff;
-  background: #1D6154;
+  background: #1d6154;
 }
 
 #filters {
@@ -580,7 +580,7 @@ h3 {
   height: 169px;
   gap: 0px;
   border-radius: 3px 0px 0px 0px;
-  background: #E8F1F6;
+  background: #e8f1f6;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -595,16 +595,16 @@ h3 {
   text-align: center;
 }
 
-input[type=file] {
+input[type="file"] {
   display: none;
 }
-input[type=file]::file-selector-button {
+input[type="file"]::file-selector-button {
   display: none;
 }
 
 .add-pic-container label {
   color: #306685;
-  background: #CBD6DC;
+  background: #cbd6dc;
   width: 173px;
   height: 36px;
   border-radius: 50px;
@@ -671,7 +671,7 @@ input[type=file]::file-selector-button {
 .submit-pic {
   width: 237px;
   height: 36px;
-  background-color: #1D6154;
+  background-color: #1d6154;
   color: white;
   border: none;
   border-radius: 60px;
@@ -695,4 +695,14 @@ select {
 
 #picture-title {
   padding: 0px 15px 0px 15px;
+}
+
+.navbar span {
+  background-color: transparent;
+}
+.fa-pen-to-square {
+  background-color: transparent;
+}
+.error-message {
+  background-color: transparent;
 }
